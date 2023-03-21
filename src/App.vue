@@ -3,7 +3,7 @@
     <list-header @find="findPost" />
 
     <main class="main">
-      <ul class="list" v-if="getPostsContent.length && !notFound">
+      <ul class="list" v-if="getPostsContent.length">
         <li class="item">
           <post-item
             v-for="item in getPostsContent"
@@ -20,7 +20,7 @@
       <div v-else class="no-posts" v-html="getNoPostsText" />
     </main>
 
-    <the-popup v-if="this.$store.state.popupName" />
+    <the-popup v-if="$store.state.popupName" />
   </div>
 </template>
 
@@ -34,17 +34,20 @@ export default {
   components: { ThePopup, ListHeader, PostItem },
   data() {
     return {
-      searchResult: [],
-      notFound: false,
+      searchString: '',
       currentPostId: '',
     };
   },
   computed: {
     getPostsContent() {
-      return this.searchResult.length ? this.searchResult : this.$store.state.posts;
+      return this.searchString
+        ? this.$store.state.posts.filter(i =>
+            i.name.toLowerCase().includes(this.searchString.toLowerCase())
+          )
+        : this.$store.state.posts ?? [];
     },
     getNoPostsText() {
-      return this.notFound ? 'Ничего не найдено :(' : 'Пока постов нет. Добавите первый?';
+      return 'Ничего не найдено :(';
     },
   },
   methods: {
@@ -56,15 +59,7 @@ export default {
       }
     },
     findPost(searchString) {
-      if (!searchString) {
-        this.searchResult = [];
-      } else {
-        this.searchResult = this.$store.state.posts.filter(i =>
-          i.name.toLowerCase().includes(searchString.toLowerCase())
-        );
-
-        this.notFound = !this.searchResult.length;
-      }
+      this.searchString = searchString;
     },
     editPost(post) {
       this.$store.commit('setPopupName', 'EditPopup');

@@ -3,7 +3,7 @@
     <h1 class="title">Список постов</h1>
 
     <div class="wrapper">
-      <div class="search-container" v-if="this.$store.state.posts.length">
+      <div class="search-container" v-if="$store.state.posts.length">
         <input
           v-model="searchQuery"
           type="text"

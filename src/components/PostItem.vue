@@ -1,5 +1,5 @@
 <template>
-  <div :class="['post-item', { _selected: selected }]" @click="$emit('click')">
+  <div :class="['post-item', { _selected: selected }]" @cick.stop="$emit('click')">
     <p class="content" v-html="post.name" />
     <div class="controls">
       <app-button type="edit" @click="clickHandler('edit')">Изменить</app-button>
