@@ -1,7 +1,7 @@
 <template>
   <div class="the-popup">
     <div class="content">
-      <button class="close" @click="close" />
+      <button v-if="$store.state.popupName !== 'ConfirmPopup'" class="close" @click="close" />
 
       <component :is="getCurrentPopup" @close="close" />
     </div>
@@ -10,11 +10,13 @@
 
 <script>
 import EditPopup from './components/EditPopup.vue';
+import ConfirmPopup from './components/ConfirmPopup.vue';
 import NewPostPopup from './components/NewPostPopup.vue';
 
 const popups = {
   NewPostPopup,
   EditPopup,
+  ConfirmPopup,
 };
 
 export default {

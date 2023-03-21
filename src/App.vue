@@ -1,21 +1,11 @@
 <template>
   <div class="app app-container">
-    <list-header @find="findPost" />
+    <list-header>
+      <search-input @find="findPost" />
+    </list-header>
 
     <main class="main">
-      <ul class="list" v-if="getPostsContent.length">
-        <li class="item">
-          <post-item
-            v-for="item in getPostsContent"
-            :key="item.id"
-            :post="item"
-            :selected="item.id === currentPostId"
-            @delete="deletePost(item.id)"
-            @edit="editPost(item)"
-            @click="selectPost(item.id)"
-          />
-        </li>
-      </ul>
+      <posts-list v-if="getPostsContent.length" :posts="getPostsContent" />
 
       <div v-else class="no-posts" v-html="getNoPostsText" />
     </main>
@@ -25,17 +15,17 @@
 </template>
 
 <script>
-import PostItem from './components/PostItem.vue';
 import ListHeader from './components/ListHeader.vue';
 import ThePopup from './components/popup/ThePopup';
+import SearchInput from './components/general/SearchInput';
+import PostsList from './components/PostsList';
 
 export default {
   name: 'App',
-  components: { ThePopup, ListHeader, PostItem },
+  components: { PostsList, SearchInput, ThePopup, ListHeader },
   data() {
     return {
       searchString: '',
-      currentPostId: '',
     };
   },
   computed: {
@@ -51,28 +41,8 @@ export default {
     },
   },
   methods: {
-    selectPost(id) {
-      if (this.currentPostId === id) {
-        this.currentPostId = '';
-      } else {
-        this.currentPostId = id;
-      }
-    },
     findPost(searchString) {
       this.searchString = searchString;
-    },
-    editPost(post) {
-      this.$store.commit('setPopupName', 'EditPopup');
-      this.$store.commit('setPopupContent', post);
-    },
-    deletePost(id) {
-      const itemToDelete = this.getPostsContent.indexOf(
-        this.getPostsContent.find(item => item.id === id)
-      );
-      const arr = JSON.parse(JSON.stringify(this.getPostsContent));
-      arr.splice(itemToDelete, 1);
-
-      this.$store.commit('setPosts', arr);
     },
   },
 };
